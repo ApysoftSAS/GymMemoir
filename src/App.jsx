@@ -60,6 +60,96 @@ const motivationalEntries = [
   },
 ];
 
+const restPresets = [30, 60, 90, 120, 180];
+
+function RestDurationControl({
+  minutes,
+  seconds,
+  onMinutesChange,
+  onSecondsChange,
+}) {
+  const setDuration = (totalSeconds) => {
+    onMinutesChange(Math.floor(totalSeconds / 60));
+    onSecondsChange(totalSeconds % 60);
+  };
+
+  const adjustDuration = (amount) => {
+    setDuration(Math.max(0, minutes * 60 + seconds + amount));
+  };
+
+  return (
+    <div className="rest-control">
+      <div className="duration-picker" aria-label="Duracion del descanso">
+        <button
+          className="duration-stepper"
+          type="button"
+          aria-label="Restar 1 minuto"
+          onClick={() => adjustDuration(-60)}
+        >
+          −
+        </button>
+
+        <label className="duration-field">
+          <span>Minutos</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="0"
+            value={minutes}
+            onChange={(event) =>
+              onMinutesChange(
+                Math.max(0, Number(event.target.value) || 0)
+              )
+            }
+          />
+        </label>
+
+        <span className="duration-separator">:</span>
+
+        <label className="duration-field">
+          <span>Segundos</span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min="0"
+            max="59"
+            value={seconds}
+            onChange={(event) =>
+              onSecondsChange(
+                Math.min(59, Math.max(0, Number(event.target.value) || 0))
+              )
+            }
+          />
+        </label>
+
+        <button
+          className="duration-stepper"
+          type="button"
+          aria-label="Sumar 1 minuto"
+          onClick={() => adjustDuration(60)}
+        >
+          +
+        </button>
+      </div>
+
+      <div className="rest-quick-actions">
+        <button type="button" onClick={() => adjustDuration(-15)}>−15 s</button>
+        <button type="button" onClick={() => adjustDuration(15)}>+15 s</button>
+        {restPresets.map((preset) => (
+          <button
+            className={minutes * 60 + seconds === preset ? "is-active" : ""}
+            type="button"
+            key={preset}
+            onClick={() => setDuration(preset)}
+          >
+            {preset < 60 ? `${preset} s` : `${preset / 60} min`}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   // =========================
   // CONFIGURACIÓN
@@ -314,47 +404,12 @@ function App() {
                 Descanso
               </label>
 
-              <div className="rest-inputs">
-                <input
-                  type="number"
-                  min="0"
-                  value={restMinutes}
-                  onChange={(e) =>
-                    setRestMinutes(
-                      Math.max(
-                        0,
-                        Number(
-                          e.target.value
-                        ) || 0
-                      )
-                    )
-                  }
-                />
-
-                <span>min</span>
-
-                <input
-                  type="number"
-                  min="0"
-                  max="59"
-                  value={restSeconds}
-                  onChange={(e) =>
-                    setRestSeconds(
-                      Math.min(
-                        59,
-                        Math.max(
-                          0,
-                          Number(
-                            e.target.value
-                          ) || 0
-                        )
-                      )
-                    )
-                  }
-                />
-
-                <span>seg</span>
-              </div>
+              <RestDurationControl
+                minutes={restMinutes}
+                seconds={restSeconds}
+                onMinutesChange={setRestMinutes}
+                onSecondsChange={setRestSeconds}
+              />
             </div>
 
             {/* INICIAR */}
@@ -398,47 +453,12 @@ function App() {
                   Descanso
                 </label>
 
-                <div className="rest-inputs">
-                  <input
-                    type="number"
-                    min="0"
-                    value={restMinutes}
-                    onChange={(e) =>
-                      setRestMinutes(
-                        Math.max(
-                          0,
-                          Number(
-                            e.target.value
-                          ) || 0
-                        )
-                      )
-                    }
-                  />
-
-                  <span>min</span>
-
-                  <input
-                    type="number"
-                    min="0"
-                    max="59"
-                    value={restSeconds}
-                    onChange={(e) =>
-                      setRestSeconds(
-                        Math.min(
-                          59,
-                          Math.max(
-                            0,
-                            Number(
-                              e.target.value
-                            ) || 0
-                          )
-                        )
-                      )
-                    }
-                  />
-
-                  <span>seg</span>
-                </div>
+                <RestDurationControl
+                  minutes={restMinutes}
+                  seconds={restSeconds}
+                  onMinutesChange={setRestMinutes}
+                  onSecondsChange={setRestSeconds}
+                />
               </div>
 
               <button
