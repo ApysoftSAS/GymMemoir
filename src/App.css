@@ -2,6 +2,11 @@
    RESET
 ========================= */
 
+:root {
+  --accent: #22c55e;
+  --bg: #111827;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -21,7 +26,7 @@ body {
     Arial,
     sans-serif;
 
-  background: #111827;
+  background: var(--bg);
 
   color: white;
 }
@@ -109,6 +114,124 @@ button {
 }
 
 
+.alert-config {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+
+  margin-top: 10px;
+}
+
+.alert-config label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  font-weight: normal;
+
+  margin-top: 0;
+}
+
+.alert-config input[type="checkbox"] {
+  width: auto;
+
+  padding: 0;
+}
+
+
+.theme-config {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.theme-mode-options {
+  display: flex;
+
+  gap: 8px;
+}
+
+.theme-mode-options button {
+  flex: 1;
+
+  min-height: 44px;
+
+  padding: 0 10px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: white;
+
+  background: #374151;
+
+  border: 1px solid #4b5563;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.theme-mode-options button.is-active {
+  border-color: var(--accent);
+
+  background: var(--accent);
+}
+
+.color-palette {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.color-swatch {
+  width: 36px;
+
+  height: 36px;
+
+  border-radius: 50%;
+
+  border: 2px solid transparent;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.color-swatch.is-selected {
+  border-color: white;
+}
+
+.color-palette input[type="color"] {
+  width: 36px;
+
+  height: 36px;
+
+  padding: 0;
+
+  border: 2px solid #4b5563;
+
+  border-radius: 50%;
+
+  background: none;
+
+  cursor: pointer;
+}
+
+
 label {
   font-size:
     clamp(
@@ -155,7 +278,7 @@ input {
 input:focus {
   box-shadow:
     0 0 0 3px
-    #3b82f6;
+    var(--accent);
 }
 
 
@@ -237,9 +360,9 @@ input:focus {
 }
 
 .rest-quick-actions .is-active {
-  border-color: #22c55e;
-  background: #166534;
-  color: #dcfce7;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
 }
 
 
@@ -273,7 +396,7 @@ input:focus {
 
   border-radius: 18px;
 
-  background: #22c55e;
+  background: var(--accent);
 
   color: white;
 
@@ -283,12 +406,12 @@ input:focus {
 
   transition:
     transform 0.15s,
-    background 0.15s;
+    filter 0.15s;
 }
 
 
 .start-button:hover {
-  background: #16a34a;
+  filter: brightness(0.88);
 }
 
 
@@ -347,7 +470,7 @@ input:focus {
     )
     0;
 
-  color: #60a5fa;
+  color: var(--accent);
 }
 
 

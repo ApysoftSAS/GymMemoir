@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import {
+  cancelRestAlarm,
+  scheduleRestAlarm,
+  setAlarmPreferences,
+} from "./utils/restAlarm";
 import caminandoConMochila from "./assets/CaminandoConMochila.png";
 import doblePulgarArriba from "./assets/DoblePulgarArriba.png";
 import fuerteConPuño from "./assets/FuerteConPuño.png";
@@ -61,6 +66,28 @@ const motivationalEntries = [
 ];
 
 const restPresets = [30, 60, 90, 120, 180];
+
+const colorPalette = [
+  "#22c55e",
+  "#3b82f6",
+  "#a855f7",
+  "#ef4444",
+  "#f97316",
+  "#ec4899",
+  "#14b8a6",
+  "#eab308",
+];
+
+const backgroundPalette = [
+  "#111827",
+  "#1f2937",
+  "#0f172a",
+  "#18181b",
+  "#312e81",
+  "#134e4a",
+  "#450a0a",
+  "#3b0764",
+];
 
 function RestDurationControl({
   minutes,
@@ -165,6 +192,76 @@ function App() {
     restMinutes * 60 + restSeconds;
 
   // =========================
+  // ALERTA DE FIN DE DESCANSO
+  // =========================
+
+  const [vibrationEnabled, setVibrationEnabled] = useState(() => {
+    const stored = localStorage.getItem("gymmemoir:vibration");
+    return stored === null ? true : stored === "true";
+  });
+
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    const stored = localStorage.getItem("gymmemoir:sound");
+    return stored === null ? true : stored === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("gymmemoir:vibration", String(vibrationEnabled));
+    localStorage.setItem("gymmemoir:sound", String(soundEnabled));
+
+    setAlarmPreferences({
+      vibration: vibrationEnabled,
+      sound: soundEnabled,
+    }).catch(console.error);
+  }, [vibrationEnabled, soundEnabled]);
+
+  // =========================
+  // COLOR DE LA APP
+  // =========================
+
+  const [colorMode, setColorMode] = useState(() => {
+    return localStorage.getItem("gymmemoir:colorMode") || "system";
+  });
+
+  const [customColor, setCustomColor] = useState(() => {
+    return localStorage.getItem("gymmemoir:customColor") || colorPalette[0];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("gymmemoir:colorMode", colorMode);
+    localStorage.setItem("gymmemoir:customColor", customColor);
+
+    const root = document.documentElement;
+
+    if (colorMode === "custom") {
+      root.style.setProperty("--accent", customColor);
+    } else {
+      root.style.removeProperty("--accent");
+    }
+  }, [colorMode, customColor]);
+
+  const [bgMode, setBgMode] = useState(() => {
+    return localStorage.getItem("gymmemoir:bgMode") || "system";
+  });
+
+  const [customBgColor, setCustomBgColor] = useState(() => {
+    return localStorage.getItem("gymmemoir:customBgColor") || backgroundPalette[0];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("gymmemoir:bgMode", bgMode);
+    localStorage.setItem("gymmemoir:customBgColor", customBgColor);
+
+    const root = document.documentElement;
+
+    if (bgMode === "custom") {
+      root.style.setProperty("--bg", customBgColor);
+    } else {
+      root.style.removeProperty("--bg");
+    }
+  }, [bgMode, customBgColor]);
+
+  // =========================
   // ESTADO DEL ENTRENAMIENTO
   // =========================
 
@@ -175,6 +272,8 @@ function App() {
   const [isResting, setIsResting] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState(0);
+
+  const [restEndsAt, setRestEndsAt] = useState(null);
 
   const [quote, setQuote] = useState("");
 
@@ -223,6 +322,7 @@ function App() {
     setIsLastSet(isFinalSet);
 
     const seconds = totalRestSeconds;
+    const endAt = Date.now() + seconds * 1000;
 
     const selectedMotivation =
       motivationalEntries[
@@ -242,6 +342,12 @@ function App() {
 
     setTimeLeft(seconds);
 
+    setRestEndsAt(endAt);
+
+    if (seconds > 0) {
+      scheduleRestAlarm(endAt).catch(console.error);
+    }
+
     setCharacterExiting(false);
 
     setShowCharacter(true);
@@ -256,24 +362,32 @@ function App() {
   useEffect(() => {
     if (
       !isResting ||
-      timeLeft <= 0
+      !restEndsAt
     ) {
       return;
     }
 
-    const timer = setInterval(() => {
+    const updateTimeLeft = () => {
       setTimeLeft(
-        (previous) =>
-          previous - 1
+        Math.max(
+          0,
+          Math.ceil((restEndsAt - Date.now()) / 1000)
+        )
       );
-    }, 1000);
+    };
+
+    updateTimeLeft();
+
+    const timer = setInterval(() => {
+      updateTimeLeft();
+    }, 250);
 
     return () => {
       clearInterval(timer);
     };
   }, [
     isResting,
-    timeLeft,
+    restEndsAt,
   ]);
 
   // =========================
@@ -291,11 +405,15 @@ function App() {
       // Esperamos que termine
       // la animación
       const timeout = setTimeout(() => {
+        cancelRestAlarm().catch(console.error);
+
         setShowCharacter(false);
 
         setCharacterExiting(false);
 
         setIsResting(false);
+
+        setRestEndsAt(null);
 
         if (isLastSet) {
           alert(
@@ -328,6 +446,7 @@ function App() {
   }, [
     isResting,
     timeLeft,
+    isLastSet,
   ]);
 
   // =========================
@@ -410,6 +529,136 @@ function App() {
                 onMinutesChange={setRestMinutes}
                 onSecondsChange={setRestSeconds}
               />
+            </div>
+
+            {/* ALERTA DE FIN DE DESCANSO */}
+
+            <div className="alert-config">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={vibrationEnabled}
+                  onChange={(e) =>
+                    setVibrationEnabled(e.target.checked)
+                  }
+                />
+                Vibrar al terminar el descanso
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  checked={soundEnabled}
+                  onChange={(e) =>
+                    setSoundEnabled(e.target.checked)
+                  }
+                />
+                Sonido al terminar el descanso
+              </label>
+            </div>
+
+            {/* COLOR DE LA APP */}
+
+            <div className="theme-config">
+              <label>
+                Color de la app
+              </label>
+
+              <div className="theme-mode-options">
+                <button
+                  type="button"
+                  className={colorMode === "system" ? "is-active" : ""}
+                  onClick={() => setColorMode("system")}
+                >
+                  Color del sistema
+                </button>
+
+                <button
+                  type="button"
+                  className={colorMode === "custom" ? "is-active" : ""}
+                  onClick={() => setColorMode("custom")}
+                >
+                  Personalizado
+                </button>
+              </div>
+
+              {colorMode === "custom" && (
+                <div className="color-palette">
+                  {colorPalette.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={
+                        customColor === color
+                          ? "color-swatch is-selected"
+                          : "color-swatch"
+                      }
+                      style={{ background: color }}
+                      aria-label={`Elegir color ${color}`}
+                      onClick={() => setCustomColor(color)}
+                    />
+                  ))}
+
+                  <input
+                    type="color"
+                    value={customColor}
+                    onChange={(e) => setCustomColor(e.target.value)}
+                    aria-label="Elegir color personalizado"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* COLOR DE FONDO */}
+
+            <div className="theme-config">
+              <label>
+                Color de fondo
+              </label>
+
+              <div className="theme-mode-options">
+                <button
+                  type="button"
+                  className={bgMode === "system" ? "is-active" : ""}
+                  onClick={() => setBgMode("system")}
+                >
+                  Color del sistema
+                </button>
+
+                <button
+                  type="button"
+                  className={bgMode === "custom" ? "is-active" : ""}
+                  onClick={() => setBgMode("custom")}
+                >
+                  Personalizado
+                </button>
+              </div>
+
+              {bgMode === "custom" && (
+                <div className="color-palette">
+                  {backgroundPalette.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={
+                        customBgColor === color
+                          ? "color-swatch is-selected"
+                          : "color-swatch"
+                      }
+                      style={{ background: color }}
+                      aria-label={`Elegir color de fondo ${color}`}
+                      onClick={() => setCustomBgColor(color)}
+                    />
+                  ))}
+
+                  <input
+                    type="color"
+                    value={customBgColor}
+                    onChange={(e) => setCustomBgColor(e.target.value)}
+                    aria-label="Elegir color de fondo personalizado"
+                  />
+                </div>
+              )}
             </div>
 
             {/* INICIAR */}
