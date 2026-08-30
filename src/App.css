@@ -1,0 +1,700 @@
+/* =========================
+   RESET
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+
+  width: 100%;
+
+  min-height: 100%;
+}
+
+body {
+  font-family:
+    Arial,
+    sans-serif;
+
+  background: #111827;
+
+  color: white;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+button {
+  border: none;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app {
+  min-height: 100vh;
+
+  min-height: 100dvh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  color: white;
+
+  padding:
+    clamp(
+      16px,
+      4vw,
+      40px
+    );
+}
+
+
+/* =========================
+   CONTENEDORES
+========================= */
+
+.setup,
+.workout {
+  width:
+    min(
+      100%,
+      450px
+    );
+}
+
+
+/* =========================
+   CONFIGURACIÓN
+========================= */
+
+.setup h1 {
+  text-align: center;
+
+  font-size:
+    clamp(
+      30px,
+      8vw,
+      42px
+    );
+
+  margin:
+    0 0
+    clamp(
+      25px,
+      6vw,
+      40px
+    );
+}
+
+
+.form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+
+label {
+  font-size:
+    clamp(
+      15px,
+      4vw,
+      18px
+    );
+
+  font-weight: bold;
+
+  margin-top: 10px;
+}
+
+
+input {
+  width: 100%;
+
+  padding:
+    clamp(
+      14px,
+      4vw,
+      18px
+    );
+
+  font-size:
+    clamp(
+      17px,
+      5vw,
+      21px
+    );
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #374151;
+
+  color: white;
+
+  outline: none;
+}
+
+
+input:focus {
+  box-shadow:
+    0 0 0 3px
+    #3b82f6;
+}
+
+
+/* =========================
+   BOTÓN INICIAR
+========================= */
+
+.start-button {
+  width: 100%;
+
+  margin-top:
+    clamp(
+      20px,
+      5vw,
+      30px
+    );
+
+  padding:
+    clamp(
+      20px,
+      5vw,
+      28px
+    );
+
+  font-size:
+    clamp(
+      22px,
+      6vw,
+      28px
+    );
+
+  border-radius: 18px;
+
+  background: #22c55e;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+
+
+.start-button:hover {
+  background: #16a34a;
+}
+
+
+.start-button:active {
+  transform:
+    scale(0.97);
+}
+
+
+/* =========================
+   ENTRENAMIENTO
+========================= */
+
+.workout {
+  text-align: center;
+}
+
+
+.workout h1 {
+  font-size:
+    clamp(
+      30px,
+      9vw,
+      48px
+    );
+
+  margin:
+    0 0
+    clamp(
+      20px,
+      6vw,
+      35px
+    );
+}
+
+
+/* =========================
+   SERIES
+========================= */
+
+.set-counter {
+  font-size:
+    clamp(
+      24px,
+      7vw,
+      34px
+    );
+
+  font-weight: bold;
+
+  margin:
+    clamp(
+      20px,
+      6vw,
+      35px
+    )
+    0;
+
+  color: #60a5fa;
+}
+
+
+/* =========================
+   REPETICIONES
+========================= */
+
+.reps {
+  font-size:
+    clamp(
+      55px,
+      18vw,
+      90px
+    );
+
+  font-weight: bold;
+
+  margin:
+    clamp(
+      25px,
+      8vw,
+      50px
+    )
+    0;
+}
+
+
+.reps span {
+  display: block;
+
+  font-size:
+    clamp(
+      16px,
+      4vw,
+      22px
+    );
+
+  color: #9ca3af;
+
+  margin-top: 5px;
+}
+
+
+/* =========================
+   BOTÓN TERMINÉ
+========================= */
+
+.finish-button {
+  width: 100%;
+
+  min-height:
+    clamp(
+      180px,
+      55vw,
+      280px
+    );
+
+  padding: 20px;
+
+  font-size:
+    clamp(
+      26px,
+      8vw,
+      40px
+    );
+
+  border-radius:
+    clamp(
+      20px,
+      6vw,
+      32px
+    );
+
+  background: #ef4444;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 15px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(
+      239,
+      68,
+      68,
+      0.3
+    );
+
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+
+
+.finish-button:hover {
+  background: #dc2626;
+}
+
+
+.finish-button:active {
+  transform:
+    scale(0.96);
+}
+
+
+.finish-icon {
+  font-size:
+    clamp(
+      45px,
+      12vw,
+      70px
+    );
+}
+
+
+/* =========================
+   DESCANSO
+========================= */
+
+.rest-screen {
+  position: relative;
+
+  overflow: hidden;
+
+  min-height: 100vh;
+
+  min-height: 100dvh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  text-align: center;
+
+  width: 100%;
+}
+
+
+.rest-screen h1 {
+  color: #22c55e;
+
+  font-size:
+    clamp(
+      30px,
+      9vw,
+      48px
+    );
+
+  margin-top: 0;
+}
+
+
+/* =========================
+   TEMPORIZADOR
+========================= */
+
+.timer {
+  font-size:
+    clamp(
+      70px,
+      25vw,
+      120px
+    );
+
+  font-weight: bold;
+
+  margin:
+    clamp(
+      30px,
+      10vw,
+      60px
+    )
+    0;
+
+  font-variant-numeric:
+    tabular-nums;
+
+  letter-spacing: -3px;
+}
+
+
+/* =========================
+   FRASE MOTIVACIONAL
+========================= */
+
+.motivational-quote {
+  margin:
+    25px auto;
+
+  max-width: 400px;
+
+  padding: 20px;
+
+  font-size:
+    clamp(
+      20px,
+      5vw,
+      28px
+    );
+
+  font-weight: bold;
+
+  line-height: 1.4;
+
+  color: #fbbf24;
+
+  text-align: center;
+
+  position: relative;
+
+  z-index: 5;
+}
+
+
+/* =========================
+   TEXTO DESCANSO
+========================= */
+
+.rest-screen p {
+  font-size:
+    clamp(
+      18px,
+      5vw,
+      24px
+    );
+
+  color: #d1d5db;
+
+  line-height: 1.4;
+
+  position: relative;
+
+  z-index: 5;
+}
+
+
+/* =========================
+   PERSONAJE
+========================= */
+
+.motivational-character {
+  position: fixed;
+
+  bottom: 10px;
+
+  right: 20px;
+
+  width:
+    clamp(
+      150px,
+      40vw,
+      240px
+    );
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  animation:
+    character-enter
+    0.7s
+    ease-out
+    forwards;
+}
+
+
+/* =========================
+   IMAGEN DEL PERSONAJE
+========================= */
+
+.motivational-character img {
+  display: block;
+
+  width: 100%;
+
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* =========================
+   ENTRADA
+   IZQUIERDA → DERECHA
+========================= */
+
+@keyframes character-enter {
+
+  0% {
+    transform:
+      translateX(
+        -120vw
+      );
+  }
+
+  100% {
+    transform:
+      translateX(0);
+  }
+}
+
+
+/* =========================
+   SALIDA
+   DERECHA → IZQUIERDA
+========================= */
+
+.motivational-character.character-exit {
+  animation:
+    character-exit
+    0.7s
+    ease-in
+    forwards;
+}
+
+
+@keyframes character-exit {
+
+  0% {
+    transform:
+      translateX(0);
+  }
+
+  100% {
+    transform:
+      translateX(
+        -120vw
+      );
+  }
+}
+
+
+/* =========================
+   TELÉFONOS PEQUEÑOS
+========================= */
+
+@media (
+  max-height: 650px
+) {
+
+  .app {
+    align-items:
+      flex-start;
+
+    padding-top: 20px;
+
+    padding-bottom: 20px;
+  }
+
+
+  .reps {
+    margin: 20px 0;
+  }
+
+
+  .finish-button {
+    min-height: 150px;
+  }
+
+
+  .timer {
+    margin: 25px 0;
+  }
+
+
+  .motivational-quote {
+    margin: 15px auto;
+  }
+
+
+  .motivational-character {
+    width: 150px;
+
+    bottom: 5px;
+
+    right: 5px;
+  }
+}
+
+
+/* =========================
+   TABLETS / PANTALLAS GRANDES
+========================= */
+
+@media (
+  min-width: 700px
+) {
+
+  .setup,
+  .workout {
+    width:
+      min(
+        100%,
+        500px
+      );
+  }
+
+
+  .motivational-character {
+    width: 240px;
+
+    right: 30px;
+  }
+}
+
+
+/* =========================
+   PANTALLA MUY ANCHA
+========================= */
+
+@media (
+  min-width: 1200px
+) {
+
+  .motivational-character {
+    width: 280px;
+
+    right: 50px;
+  }
+}
