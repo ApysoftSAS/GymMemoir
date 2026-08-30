@@ -1,28 +1,63 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import motivationalImage from "./assets/motivacional.png";
+import caminandoConMochila from "./assets/CaminandoConMochila.png";
+import doblePulgarArriba from "./assets/DoblePulgarArriba.png";
+import fuerteConPuño from "./assets/FuerteConPuño.png";
+import hero from "./assets/hero.png";
+import personaje07 from "./assets/personaje_07.png";
+import saludoDeMano from "./assets/SaludoDeMano.png";
+import senalandoAlFrente from "./assets/SeñalandoAlFrente.png";
+import senalandoLaCabeza from "./assets/SeñalandoLaCabeza.png";
 
-const motivationalQuotes = [
-  "¡Vamos! Una serie más. 💪",
-  "El esfuerzo de hoy construye tu fuerza de mañana.",
-  "No pares ahora, ya empezaste. 🔥",
-  "Cada repetición cuenta.",
-  "Tu única competencia eres tú mismo.",
-  "Respira, recupera y vuelve con todo.",
-  "La constancia supera al talento.",
-  "¡Tú puedes! La siguiente serie te espera.",
-  "El progreso comienza cuando decides no rendirte.",
-  "Un poco más. Estás construyendo una versión más fuerte de ti.",
-  "La disciplina te llevará donde la motivación no puede.",
-  "No busques excusas, busca resultados.",
-  "Hoy entrenas. Mañana agradecerás haberlo hecho.",
-  "🔥 Modo guerrero activado.",
-  "Cada serie te acerca a tu objetivo.",
-  "El límite está en tu mente. 💪",
-  "Sigue adelante. Ya llegaste demasiado lejos para parar.",
-  "Tu esfuerzo de hoy será tu orgullo de mañana.",
-  "¡Respira profundo y prepárate para volver con todo!",
-  "La siguiente serie puede ser tu mejor serie. 🔥",
+const motivationalEntries = [
+  {
+    quote: "¡Vamos! Una serie más. 💪",
+    image: doblePulgarArriba,
+  },
+  {
+    quote: "El esfuerzo de hoy construye tu fuerza de mañana.",
+    image: fuerteConPuño,
+  },
+  {
+    quote: "No pares ahora, ya empezaste. 🔥",
+    image: senalandoAlFrente,
+  },
+  {
+    quote: "Respira, recupera y vuelve con todo.",
+    image: saludoDeMano,
+  },
+  {
+    quote: "La disciplina te llevará donde la motivación no puede.",
+    image: caminandoConMochila,
+  },
+  {
+    quote: "El límite está en tu mente. 💪",
+    image: senalandoLaCabeza,
+  },
+  {
+    quote: "Sigue adelante. Ya llegaste demasiado lejos para parar.",
+    image: hero,
+  },
+  {
+    quote: "Hoy entrenas. Mañana agradecerás haberlo hecho.",
+    image: personaje07,
+  },
+  {
+    quote: "Cada repetición cuenta.",
+    image: doblePulgarArriba,
+  },
+  {
+    quote: "Tu única competencia eres tú mismo.",
+    image: senalandoLaCabeza,
+  },
+  {
+    quote: "No busques excusas, busca resultados.",
+    image: fuerteConPuño,
+  },
+  {
+    quote: "La siguiente serie puede ser tu mejor serie. 🔥",
+    image: senalandoAlFrente,
+  },
 ];
 
 function App() {
@@ -30,10 +65,14 @@ function App() {
   // CONFIGURACIÓN
   // =========================
 
-  const [exercise, setExercise] = useState("Sentadillas");
+  const [exercise] = useState("Sentadillas");
   const [sets, setSets] = useState(4);
-  const [reps, setReps] = useState(12);
-  const [rest, setRest] = useState(2);
+  const [reps] = useState(12);
+  const [restMinutes, setRestMinutes] = useState(2);
+  const [restSeconds, setRestSeconds] = useState(0);
+
+  const totalRestSeconds =
+    restMinutes * 60 + restSeconds;
 
   // =========================
   // ESTADO DEL ENTRENAMIENTO
@@ -49,6 +88,10 @@ function App() {
 
   const [quote, setQuote] = useState("");
 
+  const [motivationIndex, setMotivationIndex] = useState(0);
+
+  const [isLastSet, setIsLastSet] = useState(false);
+
   // =========================
   // PERSONAJE MOTIVACIONAL
   // =========================
@@ -57,6 +100,8 @@ function App() {
 
   const [characterExiting, setCharacterExiting] =
     useState(false);
+
+  const [characterImage, setCharacterImage] = useState("");
 
   // =========================
   // INICIAR ENTRENAMIENTO
@@ -72,6 +117,10 @@ function App() {
     setShowCharacter(false);
 
     setCharacterExiting(false);
+
+    setMotivationIndex(0);
+
+    setIsLastSet(false);
   };
 
   // =========================
@@ -79,48 +128,34 @@ function App() {
   // =========================
 
   const finishSet = () => {
-    // Si es la última serie
-    if (currentSet >= sets) {
-      alert(
-        "🎉 ¡Entrenamiento terminado!"
-      );
+    const isFinalSet = currentSet >= sets;
 
-      setStarted(false);
+    setIsLastSet(isFinalSet);
 
-      setCurrentSet(1);
+    const seconds = totalRestSeconds;
 
-      setIsResting(false);
+    const selectedMotivation =
+      motivationalEntries[
+        motivationIndex %
+          motivationalEntries.length
+      ];
 
-      setShowCharacter(false);
+    setQuote(selectedMotivation.quote);
 
-      setCharacterExiting(false);
-
-      return;
-    }
-
-    // Convertimos minutos a segundos
-    const seconds = rest * 60;
-
-    // Elegimos frase aleatoria
-    const randomIndex =
-      Math.floor(
-        Math.random() *
-          motivationalQuotes.length
-      );
-
-    setQuote(
-      motivationalQuotes[randomIndex]
+    setCharacterImage(
+      selectedMotivation.image
     );
 
-    // Iniciamos temporizador
+    setMotivationIndex(
+      (previous) => previous + 1
+    );
+
     setTimeLeft(seconds);
 
-    // Preparar personaje
     setCharacterExiting(false);
 
     setShowCharacter(true);
 
-    // Activar descanso
     setIsResting(true);
   };
 
@@ -171,6 +206,20 @@ function App() {
         setCharacterExiting(false);
 
         setIsResting(false);
+
+        if (isLastSet) {
+          alert(
+            "🎉 ¡Entrenamiento terminado!"
+          );
+
+          setStarted(false);
+
+          setCurrentSet(1);
+
+          setIsLastSet(false);
+
+          return;
+        }
 
         setCurrentSet(
           (previous) =>
@@ -234,26 +283,10 @@ function App() {
         <div className="setup">
 
           <h1>
-            🏋️ GYM APP
+            🏋️ GYM MEMOIR
           </h1>
 
           <div className="form">
-
-            {/* EJERCICIO */}
-
-            <label>
-              Ejercicio
-            </label>
-
-            <input
-              type="text"
-              value={exercise}
-              onChange={(e) =>
-                setExercise(
-                  e.target.value
-                )
-              }
-            />
 
             {/* SERIES */}
 
@@ -274,43 +307,55 @@ function App() {
               }
             />
 
-            {/* REPETICIONES */}
-
-            <label>
-              Repeticiones por serie
-            </label>
-
-            <input
-              type="number"
-              min="1"
-              value={reps}
-              onChange={(e) =>
-                setReps(
-                  Number(
-                    e.target.value
-                  )
-                )
-              }
-            />
-
             {/* DESCANSO */}
 
-            <label>
-              Descanso (minutos)
-            </label>
+            <div className="rest-config">
+              <label>
+                Descanso
+              </label>
 
-            <input
-              type="number"
-              min="0"
-              value={rest}
-              onChange={(e) =>
-                setRest(
-                  Number(
-                    e.target.value
-                  )
-                )
-              }
-            />
+              <div className="rest-inputs">
+                <input
+                  type="number"
+                  min="0"
+                  value={restMinutes}
+                  onChange={(e) =>
+                    setRestMinutes(
+                      Math.max(
+                        0,
+                        Number(
+                          e.target.value
+                        ) || 0
+                      )
+                    )
+                  }
+                />
+
+                <span>min</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  max="59"
+                  value={restSeconds}
+                  onChange={(e) =>
+                    setRestSeconds(
+                      Math.min(
+                        59,
+                        Math.max(
+                          0,
+                          Number(
+                            e.target.value
+                          ) || 0
+                        )
+                      )
+                    )
+                  }
+                />
+
+                <span>seg</span>
+              </div>
+            </div>
 
             {/* INICIAR */}
 
@@ -342,22 +387,58 @@ function App() {
             ========================== */
 
             <>
-              <h1>
-                {exercise}
-              </h1>
-
               <div className="set-counter">
                 SERIE{" "}
                 {currentSet} /{" "}
                 {sets}
               </div>
 
-              <div className="reps">
-                {reps}
+              <div className="rest-config">
+                <label>
+                  Descanso
+                </label>
 
-                <span>
-                  REPETICIONES
-                </span>
+                <div className="rest-inputs">
+                  <input
+                    type="number"
+                    min="0"
+                    value={restMinutes}
+                    onChange={(e) =>
+                      setRestMinutes(
+                        Math.max(
+                          0,
+                          Number(
+                            e.target.value
+                          ) || 0
+                        )
+                      )
+                    }
+                  />
+
+                  <span>min</span>
+
+                  <input
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={restSeconds}
+                    onChange={(e) =>
+                      setRestSeconds(
+                        Math.min(
+                          59,
+                          Math.max(
+                            0,
+                            Number(
+                              e.target.value
+                            ) || 0
+                          )
+                        )
+                      )
+                    }
+                  />
+
+                  <span>seg</span>
+                </div>
               </div>
 
               <button
@@ -401,10 +482,18 @@ function App() {
               </div>
 
               <p>
-                Prepárate para la serie{" "}
-                <strong>
-                  {currentSet + 1}
-                </strong>
+                {isLastSet ? (
+                  <>
+                    Última serie. <strong>¡Dale todo!</strong>
+                  </>
+                ) : (
+                  <>
+                    Prepárate para la serie{" "}
+                    <strong>
+                      {currentSet + 1}
+                    </strong>
+                  </>
+                )}
               </p>
 
               {/* PERSONAJE */}
@@ -418,9 +507,7 @@ function App() {
                   }`}
                 >
                   <img
-                    src={
-                      motivationalImage
-                    }
+                    src={characterImage}
                     alt="Motivación"
                   />
                 </div>

@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Gym App</string>
-    <string name="title_activity_main">Gym App</string>
-    <string name="package_name">com.gymapp.training</string>
-    <string name="custom_url_scheme">com.gymapp.training</string>
+    <string name="app_name">Gym Memoir</string>
+    <string name="title_activity_main">Gym Memoir</string>
+    <string name="package_name">com.apysoft.gymmemoir</string>
+    <string name="custom_url_scheme">com.apysoft.gymmemoir</string>
 </resources>
+|
